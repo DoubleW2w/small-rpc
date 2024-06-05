@@ -4,6 +4,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.springframework.stereotype.Component;
 
 /**
  * 服务提供者注解
@@ -12,8 +13,9 @@ import java.lang.annotation.Target;
  * @date: 2024/6/5 14:35
  * @project: small-rpc
  */
-@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE})
+@Component
 public @interface RpcService {
   /** 接口的Class */
   Class<?> interfaceClass() default void.class;

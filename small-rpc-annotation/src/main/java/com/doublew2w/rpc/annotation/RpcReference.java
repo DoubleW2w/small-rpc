@@ -4,6 +4,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * 服务消费者注解
@@ -14,6 +15,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
+@Autowired
 public @interface RpcReference {
   /** 版本号 */
   String version() default "1.0.0";
