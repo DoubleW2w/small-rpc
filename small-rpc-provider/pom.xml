@@ -8,19 +8,23 @@
         <artifactId>small-rpc</artifactId>
         <version>1.0.0</version>
     </parent>
+    <packaging>pom</packaging>
+    <description>rpc 服务提供者父工程</description>
+    <modules>
+        <module>small-rpc-provider-common</module>
+        <module>small-rpc-provider-naive</module>
+    </modules>
+    <artifactId>small-rpc-provider</artifactId>
 
-    <artifactId>small-rpc-common</artifactId>
-    <description>实现rpc框架的通用工具类</description>
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
     <dependencies>
         <dependency>
             <groupId>com.doublew2w</groupId>
-            <artifactId>small-rpc-annotation</artifactId>
+            <artifactId>small-rpc-common</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

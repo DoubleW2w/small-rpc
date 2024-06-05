@@ -12,6 +12,7 @@
         <module>small-rpc-annotation</module>
         <module>small-rpc-common</module>
         <module>small-rpc-test</module>
+        <module>small-rpc-provider</module>
     </modules>
 
     <properties>

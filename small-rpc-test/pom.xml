@@ -12,6 +12,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>small-rpc-test-common</module>
+        <module>small-rpc-test-provider</module>
     </modules>
 
     <properties>

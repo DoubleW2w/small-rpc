@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * {@code @RpcService}注解扫描器
@@ -25,9 +27,10 @@ public class RpcServiceScanner extends ClassScanner {
    */
   public static Map<String, Object> doScannerWithRpcServiceAnnotationFilterAndRegistryService(
       String scanPackage) throws Exception {
+
     Map<String, Object> handlerMap = new HashMap<>(8);
     List<String> classNameList = getClassNameList(scanPackage);
-    if (classNameList == null || classNameList.isEmpty()) {
+    if (CollectionUtils.isEmpty(classNameList)) {
       return handlerMap;
     }
     classNameList.forEach(
@@ -36,17 +39,28 @@ public class RpcServiceScanner extends ClassScanner {
             Class<?> clazz = Class.forName(className);
             RpcService rpcService = clazz.getAnnotation(RpcService.class);
             if (rpcService != null) {
-              log.info("当前标注了@RpcService注解的类实例名称===>>> " + clazz.getName());
-              log.info("@RpcService注解上标注的属性信息如下：");
-              log.info("interfaceClass===>>> " + rpcService.interfaceClass().getName());
-              log.info("interfaceClassName===>>> " + rpcService.interfaceClassName());
-              log.info("version===>>> " + rpcService.version());
-              log.info("group===>>> " + rpcService.group());
+              String serviceName = getServiceName(rpcService);
+              String key = serviceName.concat(rpcService.version()).concat(rpcService.group());
+              handlerMap.put(key, clazz.getDeclaredConstructor().newInstance());
             }
           } catch (Exception e) {
             log.error("scan classes throws exception: {}", e.getMessage(), e);
           }
         });
     return handlerMap;
+  }
+
+  /** 获取serviceName */
+  private static String getServiceName(RpcService rpcService) {
+    // 优先使用interfaceClass
+    Class<?> clazz = rpcService.interfaceClass();
+    if (clazz == void.class) {
+      return rpcService.interfaceClassName();
+    }
+    String serviceName = clazz.getName();
+    if (StringUtils.isBlank(serviceName)) {
+      serviceName = rpcService.interfaceClassName();
+    }
+    return serviceName;
   }
 }
