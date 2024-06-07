@@ -13,6 +13,8 @@
         <module>small-rpc-common</module>
         <module>small-rpc-test</module>
         <module>small-rpc-provider</module>
+        <module>small-rpc-constants</module>
+        <module>small-rpc-protocol</module>
     </modules>
 
     <properties>
