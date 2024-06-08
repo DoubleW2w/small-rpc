@@ -2,7 +2,10 @@ package com.doublew2w.rpc.protocol.request;
 
 
 import com.doublew2w.rpc.protocol.base.RpcMessage;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author: DoubleW2w
@@ -10,6 +13,9 @@ import lombok.Data;
  * @project: small-rpc
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RpcRequest extends RpcMessage {
   private static final long serialVersionUID = 5555776886650396129L;
 

@@ -58,7 +58,6 @@ public class BaseServer implements Server {
                 @Override
                 public void initChannel(SocketChannel ch) throws Exception {
                   ch.pipeline()
-                      // TODO 预留编解码，需要实现自定义协议
                       .addLast(new RpcDecoder())
                       .addLast(new RpcEncoder())
                       .addLast(new RpcProviderHandler(handlerMap));

@@ -14,6 +14,7 @@
         <module>small-rpc-test-common</module>
         <module>small-rpc-test-provider</module>
         <module>small-rpc-test-protocol</module>
+        <module>small-rpc-test-consumer</module>
     </modules>
 
     <properties>
@@ -38,6 +39,11 @@
             <dependency>
                 <groupId>com.doublew2w</groupId>
                 <artifactId>small-rpc-protocol</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.doublew2w</groupId>
+                <artifactId>small-rpc-codec</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
