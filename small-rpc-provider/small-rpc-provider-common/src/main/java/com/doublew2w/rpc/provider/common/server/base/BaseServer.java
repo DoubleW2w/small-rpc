@@ -1,5 +1,7 @@
 package com.doublew2w.rpc.provider.common.server.base;
 
+import com.doublew2w.rpc.codec.RpcDecoder;
+import com.doublew2w.rpc.codec.RpcEncoder;
 import com.doublew2w.rpc.provider.common.handler.RpcProviderHandler;
 import com.doublew2w.rpc.provider.common.server.api.Server;
 import io.netty.bootstrap.ServerBootstrap;
@@ -10,8 +12,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -59,8 +59,8 @@ public class BaseServer implements Server {
                 public void initChannel(SocketChannel ch) throws Exception {
                   ch.pipeline()
                       // TODO 预留编解码，需要实现自定义协议
-                      .addLast(new StringDecoder())
-                      .addLast(new StringEncoder())
+                      .addLast(new RpcDecoder())
+                      .addLast(new RpcEncoder())
                       .addLast(new RpcProviderHandler(handlerMap));
                 }
               })

@@ -12,6 +12,9 @@ import lombok.*;
  * @project: small-rpc
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RpcProtocol<T> implements Serializable {
   private static final long serialVersionUID = 292789485166173277L;
 

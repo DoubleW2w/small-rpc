@@ -15,6 +15,8 @@
         <module>small-rpc-provider</module>
         <module>small-rpc-constants</module>
         <module>small-rpc-protocol</module>
+        <module>small-rpc-codec</module>
+        <module>small-rpc-serialization</module>
     </modules>
 
     <properties>
@@ -31,6 +33,7 @@
         <slf4j.version>1.7.36</slf4j.version>
         <commons-logging.version>1.3.0</commons-logging.version>
         <lombok.version>1.18.30</lombok.version>
+        <fastjson2.version>2.0.49</fastjson2.version>
     </properties>
 
     <dependencyManagement>
@@ -68,6 +71,11 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
             <version>2.21.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
+            <version>${fastjson2.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
