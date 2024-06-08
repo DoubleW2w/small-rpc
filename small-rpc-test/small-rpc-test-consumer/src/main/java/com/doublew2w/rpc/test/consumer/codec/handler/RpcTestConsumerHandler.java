@@ -39,9 +39,9 @@ public class RpcTestConsumerHandler extends SimpleChannelInboundHandler<RpcProto
     RpcRequest request =
         RpcRequest.builder()
             .className("com.doublew2w.rpc.test.provider.naive.DemoService")
-            .group("doublew")
-            .methodName("hello")
-            .parameters(new Object[] {"doublew"})
+            .group("double")
+            .methodName("helloWorld")
+            .parameters(new Object[] {"teteteteteteasdasdas "})
             .parameterTypes(new Class[] {String.class})
             .version("1.0.0")
             .build();

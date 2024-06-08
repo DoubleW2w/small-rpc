@@ -20,12 +20,4 @@ public class RpcSingleServerTest {
     // 启动服务器
     rpcSingleServer.startNettyServer();
   }
-
-  public static void main(String[] args){
-    // 扫描RpcService注解类
-    RpcSingleServer rpcSingleServer =
-        new RpcSingleServer("127.0.0.1:27880", "com.doublew2w.rpc.test");
-    // 启动服务器
-    rpcSingleServer.startNettyServer();
-  }
 }

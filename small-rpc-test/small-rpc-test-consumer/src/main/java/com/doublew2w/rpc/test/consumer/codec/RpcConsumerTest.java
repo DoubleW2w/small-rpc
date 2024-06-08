@@ -6,6 +6,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
 
 /**
  * 测试消费端
@@ -15,8 +16,10 @@ import lombok.extern.slf4j.Slf4j;
  * @project: small-rpc
  */
 @Slf4j
-public class RpcTestConsumer {
-  public static void main(String[] args) throws InterruptedException {
+public class RpcConsumerTest {
+
+  @Test
+  public void testConsumerConnectProvider() throws InterruptedException {
     Bootstrap bootstrap = new Bootstrap();
     EventLoopGroup eventLoopGroup = new NioEventLoopGroup(4);
     try {

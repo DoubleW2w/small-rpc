@@ -2,6 +2,8 @@ package com.doublew2w.rpc.provider.naive;
 
 import com.doublew2w.rpc.common.scanner.server.RpcServiceScanner;
 import com.doublew2w.rpc.provider.common.server.base.BaseServer;
+import java.lang.reflect.Method;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -13,12 +15,19 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class RpcSingleServer extends BaseServer {
-
   public RpcSingleServer(String serverAddress, String scanPackage) {
-    //调用父类构造方法
+    // 调用父类构造方法
     super(serverAddress);
     try {
-      this.handlerMap = RpcServiceScanner.doScannerWithRpcServiceAnnotationFilterAndRegistryService(scanPackage);
+      this.handlerMap =
+          RpcServiceScanner.doScannerWithRpcServiceAnnotationFilterAndRegistryService(scanPackage);
+      log.debug("print all RpcService");
+      for (Map.Entry<String, Object> entry : handlerMap.entrySet()) {
+        Method[] declaredMethods = entry.getValue().getClass().getDeclaredMethods();
+        for (Method declaredMethod : declaredMethods) {
+          log.debug("key:{} ---> method:{}", entry.getKey(), declaredMethod.getName());
+        }
+      }
     } catch (Exception e) {
       log.error("RPC Server init error", e);
     }

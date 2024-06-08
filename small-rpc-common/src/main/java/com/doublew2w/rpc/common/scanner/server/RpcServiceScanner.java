@@ -1,6 +1,7 @@
 package com.doublew2w.rpc.common.scanner.server;
 
 import com.doublew2w.rpc.annotation.RpcService;
+import com.doublew2w.rpc.common.helper.RpcServiceHelper;
 import com.doublew2w.rpc.common.scanner.ClassScanner;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +41,7 @@ public class RpcServiceScanner extends ClassScanner {
             RpcService rpcService = clazz.getAnnotation(RpcService.class);
             if (rpcService != null) {
               String serviceName = getServiceName(rpcService);
-              String key = serviceName.concat(rpcService.version()).concat(rpcService.group());
+              String key = RpcServiceHelper.buildServiceKey(serviceName, rpcService.version(), rpcService.group());
               handlerMap.put(key, clazz.getDeclaredConstructor().newInstance());
             }
           } catch (Exception e) {

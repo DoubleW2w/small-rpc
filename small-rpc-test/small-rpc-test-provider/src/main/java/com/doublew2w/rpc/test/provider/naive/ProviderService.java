@@ -9,7 +9,12 @@ import com.doublew2w.rpc.annotation.RpcService;
  */
 @RpcService(
     interfaceClass = DemoService.class,
-    interfaceClassName = "com.doublew2w.rpc.test.provider.naive.DemoService")
+    interfaceClassName = "com.doublew2w.rpc.test.provider.naive.DemoService",
+    group = "double")
 public class ProviderService implements DemoService {
 
+  @Override
+  public String helloWorld(String name) {
+    return name + " hello world";
+  }
 }

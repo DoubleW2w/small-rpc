@@ -7,4 +7,6 @@ package com.doublew2w.rpc.test.provider.naive;
  * @date: 2024/6/6 3:20
  * @project: small-rpc
  */
-public interface DemoService {}
+public interface DemoService {
+  String helloWorld(String name);
+}
