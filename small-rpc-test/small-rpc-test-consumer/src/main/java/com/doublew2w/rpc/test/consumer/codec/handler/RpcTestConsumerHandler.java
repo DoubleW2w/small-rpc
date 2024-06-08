@@ -5,6 +5,7 @@ import com.doublew2w.rpc.protocol.RpcProtocol;
 import com.doublew2w.rpc.protocol.header.RpcHeaderFactory;
 import com.doublew2w.rpc.protocol.request.RpcRequest;
 import com.doublew2w.rpc.protocol.response.RpcResponse;
+import com.doublew2w.rpc.test.api.DemoService;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -38,10 +39,10 @@ public class RpcTestConsumerHandler extends SimpleChannelInboundHandler<RpcProto
     protocol.setHeader(RpcHeaderFactory.getRequestHeader("jdk"));
     RpcRequest request =
         RpcRequest.builder()
-            .className("com.doublew2w.rpc.test.provider.naive.DemoService")
+            .className(DemoService.class.getName())
             .group("double")
-            .methodName("helloWorld")
-            .parameters(new Object[] {"teteteteteteasdasdas "})
+            .methodName("hello")
+            .parameters(new Object[] {"my name is nameasdasdasd "})
             .parameterTypes(new Class[] {String.class})
             .version("1.0.0")
             .build();
