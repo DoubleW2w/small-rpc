@@ -3,6 +3,7 @@ package com.doublew2w.rpc.provider.common.handler;
 import cn.hutool.core.util.StrUtil;
 import com.doublew2w.rpc.common.helper.RpcServiceHelper;
 import com.doublew2w.rpc.common.threadpool.ServerThreadPool;
+import com.doublew2w.rpc.constants.RpcConstants;
 import com.doublew2w.rpc.protocol.RpcProtocol;
 import com.doublew2w.rpc.protocol.enumeration.RpcStatus;
 import com.doublew2w.rpc.protocol.enumeration.RpcType;
@@ -15,6 +16,8 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.cglib.reflect.FastClass;
+import net.sf.cglib.reflect.FastMethod;
 
 /**
  * @author: DoubleW2w
@@ -23,10 +26,15 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class RpcProviderHandler extends SimpleChannelInboundHandler<RpcProtocol<RpcRequest>> {
+  /** 服务提供者 */
   private final Map<String, Object> handlerMap;
 
-  public RpcProviderHandler(Map<String, Object> handlerMap) {
+  /** 调用采用哪种类型调用真实方法 */
+  private final String reflectType;
+
+  public RpcProviderHandler(Map<String, Object> handlerMap, String reflectType) {
     this.handlerMap = handlerMap;
+    this.reflectType = reflectType;
   }
 
   @Override
@@ -107,8 +115,63 @@ public class RpcProviderHandler extends SimpleChannelInboundHandler<RpcProtocol<
     return invokeMethod(serviceBean, serviceClass, methodName, parameterTypes, parameters);
   }
 
-  // TODO 目前使用JDK动态代理方式，此处埋点
+  /** 调用方法 */
   private Object invokeMethod(
+      Object serviceBean,
+      Class<?> serviceClass,
+      String methodName,
+      Class<?>[] parameterTypes,
+      Object[] parameters)
+      throws Throwable {
+    switch (this.reflectType) {
+      case RpcConstants.REFLECT_TYPE_JDK:
+        return this.invokeJDKMethod(
+            serviceBean, serviceClass, methodName, parameterTypes, parameters);
+      case RpcConstants.REFLECT_TYPE_CGLIB:
+        return this.invokeCGLibMethod(
+            serviceBean, serviceClass, methodName, parameterTypes, parameters);
+      default:
+        throw new IllegalArgumentException("not support reflect type");
+    }
+  }
+
+  /**
+   * CGLib代理方式
+   *
+   * @param serviceBean 实例对象
+   * @param serviceClass 目标类
+   * @param methodName 目标方法
+   * @param parameterTypes 目标参数类型列表
+   * @param parameters 目标参数列表
+   * @return 方法返回结果
+   * @throws Throwable 异常
+   */
+  private Object invokeCGLibMethod(
+      Object serviceBean,
+      Class<?> serviceClass,
+      String methodName,
+      Class<?>[] parameterTypes,
+      Object[] parameters)
+      throws Throwable {
+    // Cglib reflect
+    log.info("use cglib reflect type invoke method...");
+    FastClass serviceFastClass = FastClass.create(serviceClass);
+    FastMethod serviceFastMethod = serviceFastClass.getMethod(methodName, parameterTypes);
+    return serviceFastMethod.invoke(serviceBean, parameters);
+  }
+
+  /**
+   * jdk反射方式调用方法
+   *
+   * @param serviceBean 实例对象
+   * @param serviceClass 目标类
+   * @param methodName 目标方法
+   * @param parameterTypes 目标参数类型列表
+   * @param parameters 目标参数列表
+   * @return 方法返回结果
+   * @throws Throwable 异常
+   */
+  private Object invokeJDKMethod(
       Object serviceBean,
       Class<?> serviceClass,
       String methodName,
