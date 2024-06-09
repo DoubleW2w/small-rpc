@@ -41,7 +41,12 @@ public @interface RpcReference {
   /** 是否单向调用 */
   boolean oneway() default false;
 
-  /** 代理的类型，jdk：jdk代理， javassist: javassist代理, cglib: cglib代理 */
+  /**
+   * 代理的类型
+   * <li>jdk:jdk代理
+   * <li>javassist: javassist代理
+   * <li>cglib: cglib代理
+   */
   String proxy() default "jdk";
 
   /** 服务分组，默认为空 */

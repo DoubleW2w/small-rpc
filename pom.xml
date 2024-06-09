@@ -17,6 +17,7 @@
         <module>small-rpc-protocol</module>
         <module>small-rpc-codec</module>
         <module>small-rpc-serialization</module>
+        <module>small-rpc-consumer</module>
     </modules>
 
     <properties>

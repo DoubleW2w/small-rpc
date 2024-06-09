@@ -47,6 +47,11 @@
                 <artifactId>small-rpc-codec</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.doublew2w</groupId>
+                <artifactId>small-rpc-consumer-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

@@ -6,6 +6,7 @@
         <Property name="consolePattern">%d %highlight{%-5level}{ERROR=Bright RED, WARN=Bright Yellow, INFO=Bright Green, DEBUG=Bright Cyan, TRACE=Bright White} %style{[%t]}{bright,magenta} %style{%c{1}}{cyan}: %msg%n</Property>
         <Property name="pattern">%d %-5level [%t] %c{1}: %msg%n</Property>
         <Property name="filePatternPrefix">logs/%d{yyyy-MM}</Property>
+        <Property name="log4j.skipJansi" value="false"/>
     </Properties>
     <appenders>
         <Console name="console_out_appender" target="SYSTEM_OUT">
@@ -17,8 +18,7 @@
             </PatternLayout>
         </Console>
         <RollingFile name="info_appender" immediateFlush="true"
-                     fileName="logs/log.log"
-                     filePattern="${filePatternPrefix}/info-%d{yyyy-MM-dd}-%i.log">
+                     fileName="logs/log.log" filePattern="${filePatternPrefix}/info-%d{yyyy-MM-dd}-%i.log">
             <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
             <PatternLayout>
                 <pattern>${pattern}</pattern>
@@ -31,8 +31,7 @@
 
         <!-- ERROR级别日志 -->
         <RollingFile name="error_appender" immediateFlush="true"
-                     fileName="logs/error.log"
-                     filePattern="${filePatternPrefix}/error-%d{yyyy-MM-dd}-%i.log">
+                     fileName="logs/error.log" filePattern="${filePatternPrefix}/error-%d{yyyy-MM-dd}-%i.log">
             <PatternLayout>
                 <pattern>${pattern}</pattern>
             </PatternLayout>
@@ -47,7 +46,7 @@
     </appenders>
 
     <Loggers>
-        <root level="info">
+        <root level="INFO">
             <appender-ref ref="console_out_appender"/>
             <appender-ref ref="info_appender"/>
             <appender-ref ref="error_appender"/>
