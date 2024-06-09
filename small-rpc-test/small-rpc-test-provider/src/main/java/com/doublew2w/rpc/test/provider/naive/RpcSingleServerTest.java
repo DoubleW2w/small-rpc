@@ -16,7 +16,7 @@ public class RpcSingleServerTest {
   public void testRpcSingleServerScanner() {
     // 扫描RpcService注解类
     RpcSingleServer rpcSingleServer =
-        new RpcSingleServer("127.0.0.1:27880", "com.doublew2w.rpc.test", "cglib");
+        new RpcSingleServer("127.0.0.1:27880", "com.doublew2w.rpc.test", "jdk");
     // 启动服务器
     rpcSingleServer.startNettyServer();
   }

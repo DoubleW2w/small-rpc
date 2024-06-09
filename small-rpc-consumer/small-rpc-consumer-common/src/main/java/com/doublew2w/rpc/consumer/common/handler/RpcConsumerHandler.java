@@ -1,6 +1,7 @@
 package com.doublew2w.rpc.consumer.common.handler;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.doublew2w.rpc.consumer.common.future.RpcFuture;
 import com.doublew2w.rpc.protocol.RpcProtocol;
 import com.doublew2w.rpc.protocol.header.RpcHeader;
 import com.doublew2w.rpc.protocol.request.RpcRequest;
@@ -32,7 +33,7 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
   @Getter private SocketAddress remotePeer;
 
   /** 存储请求ID与RpcResponse协议的映射关系 */
-  private Map<Long, RpcProtocol<RpcResponse>> pendingResponse = new ConcurrentHashMap<>();
+  private Map<Long, RpcFuture> pendingRPC = new ConcurrentHashMap<>();
 
   @Override
   public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -56,25 +57,29 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
     log.info("服务消费者接收到的数据===>>>{}", JSONObject.toJSONString(protocol));
     RpcHeader header = protocol.getHeader();
     long requestId = header.getRequestId();
-    pendingResponse.put(requestId, protocol);
+    RpcFuture rpcFuture = pendingRPC.remove(requestId);
+    if (rpcFuture != null) {
+      rpcFuture.done(protocol);
+    }
   }
 
   /** 服务消费者向服务提供者发送请求 */
-  public Object sendRequest(RpcProtocol<RpcRequest> protocol) {
+  public RpcFuture sendRequest(RpcProtocol<RpcRequest> protocol) {
     log.info("服务消费者发送的数据===>>>{}", JSONObject.toJSONString(protocol));
+    RpcFuture rpcFuture = this.getRpcFuture(protocol);
     channel.writeAndFlush(protocol);
-    RpcHeader header = protocol.getHeader();
-    long requestId = header.getRequestId();
-    // 异步转同步
-    while (true) {
-      RpcProtocol<RpcResponse> responseRpcProtocol = pendingResponse.remove(requestId);
-      if (responseRpcProtocol != null) {
-        return responseRpcProtocol.getBody().getResult();
-      }
-    }
+    return rpcFuture;
   }
 
   public void close() {
     channel.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
+  }
+
+  private RpcFuture getRpcFuture(RpcProtocol<RpcRequest> protocol) {
+    RpcFuture rpcFuture = new RpcFuture(protocol);
+    RpcHeader header = protocol.getHeader();
+    long requestId = header.getRequestId();
+    pendingRPC.put(requestId, rpcFuture);
+    return rpcFuture;
   }
 }

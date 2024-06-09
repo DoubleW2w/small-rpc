@@ -1,6 +1,7 @@
 package com.doublew2w.rpc.test.consumer.handler;
 
 import com.doublew2w.rpc.consumer.common.RpcConsumer;
+import com.doublew2w.rpc.consumer.common.future.RpcFuture;
 import com.doublew2w.rpc.protocol.RpcProtocol;
 import com.doublew2w.rpc.protocol.header.RpcHeaderFactory;
 import com.doublew2w.rpc.protocol.request.RpcRequest;
@@ -20,7 +21,8 @@ public class RpcConsumerHandlerTest {
   @Test
   public void testRpcConsumerHandler() throws Exception {
     RpcConsumer consumer = RpcConsumer.getInstance();
-    Object result = consumer.sendRequest(getRpcRequestProtocol());
+    RpcFuture rpcFuture = consumer.sendRequest(getRpcRequestProtocol());
+    Object result = rpcFuture.get();
     log.info("从服务消费者获取到的数据===>>>:{}", result.toString());
     consumer.close();
   }
