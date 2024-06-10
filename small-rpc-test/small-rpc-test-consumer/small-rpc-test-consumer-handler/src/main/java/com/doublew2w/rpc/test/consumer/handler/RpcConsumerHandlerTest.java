@@ -1,6 +1,7 @@
 package com.doublew2w.rpc.test.consumer.handler;
 
 import com.doublew2w.rpc.consumer.common.RpcConsumer;
+import com.doublew2w.rpc.consumer.common.callback.AsyncRpcCallback;
 import com.doublew2w.rpc.consumer.common.future.RpcFuture;
 import com.doublew2w.rpc.protocol.RpcProtocol;
 import com.doublew2w.rpc.protocol.header.RpcHeaderFactory;
@@ -40,6 +41,26 @@ public class RpcConsumerHandlerTest {
     RpcConsumer consumer = RpcConsumer.getInstance();
     consumer.sendRequest(getRpcRequestProtocolOneway());
     log.info("无需返回的数据");
+    consumer.close();
+  }
+
+  @Test
+  public void testCallBack() throws Exception {
+    RpcConsumer consumer = RpcConsumer.getInstance();
+    RpcFuture rpcFuture = consumer.sendRequest(getRpcRequestProtocolSync());
+    rpcFuture.addCallback(
+        new AsyncRpcCallback() {
+          @Override
+          public void onSuccess(Object result) {
+            log.info("从服务消费者获取到的数据===>>>" + result);
+          }
+
+          @Override
+          public void onException(Exception e) {
+            log.info("抛出了异常===>>>" + e);
+          }
+        });
+    Thread.sleep(200);
     consumer.close();
   }
 
@@ -98,11 +119,14 @@ public class RpcConsumerHandlerTest {
     private static ThreadLocal<Integer> threadLocal = ThreadLocal.withInitial(() -> 1);
 
     public static void main(String[] args) {
-      Runnable task = () -> {
-        System.out.println(Thread.currentThread().getName() + " initial value: " + threadLocal.get());
-        threadLocal.set(threadLocal.get() + 1);
-        System.out.println(Thread.currentThread().getName() + " updated value: " + threadLocal.get());
-      };
+      Runnable task =
+          () -> {
+            System.out.println(
+                Thread.currentThread().getName() + " initial value: " + threadLocal.get());
+            threadLocal.set(threadLocal.get() + 1);
+            System.out.println(
+                Thread.currentThread().getName() + " updated value: " + threadLocal.get());
+          };
 
       Thread thread1 = new Thread(task);
       Thread thread2 = new Thread(task);
@@ -112,18 +136,25 @@ public class RpcConsumerHandlerTest {
     }
   }
 
-
   public static class InheritableThreadLocalExample {
-    private static InheritableThreadLocal<Integer> inheritableThreadLocal = new InheritableThreadLocal<>();
+    private static InheritableThreadLocal<Integer> inheritableThreadLocal =
+        new InheritableThreadLocal<>();
 
     public static void main(String[] args) {
       inheritableThreadLocal.set(1);
 
-      Runnable task = () -> {
-        System.out.println(Thread.currentThread().getName() + " initial value: " + inheritableThreadLocal.get());
-        inheritableThreadLocal.set(inheritableThreadLocal.get() + 1);
-        System.out.println(Thread.currentThread().getName() + " updated value: " + inheritableThreadLocal.get());
-      };
+      Runnable task =
+          () -> {
+            System.out.println(
+                Thread.currentThread().getName()
+                    + " initial value: "
+                    + inheritableThreadLocal.get());
+            inheritableThreadLocal.set(inheritableThreadLocal.get() + 1);
+            System.out.println(
+                Thread.currentThread().getName()
+                    + " updated value: "
+                    + inheritableThreadLocal.get());
+          };
 
       Thread thread1 = new Thread(task);
       Thread thread2 = new Thread(task);

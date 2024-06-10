@@ -48,6 +48,7 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
     this.channel = ctx.channel();
   }
 
+  /** 当服务提供者发送 RpcProtocol<RpcResponse> 类型的消息时，就会调用该方法 */
   @Override
   protected void channelRead0(
       ChannelHandlerContext channelHandlerContext, RpcProtocol<RpcResponse> protocol)

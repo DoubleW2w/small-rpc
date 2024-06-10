@@ -1,5 +1,6 @@
 package com.doublew2w.rpc.consumer.common;
 
+import com.doublew2w.rpc.common.threadpool.ClientThreadPool;
 import com.doublew2w.rpc.consumer.common.future.RpcFuture;
 import com.doublew2w.rpc.consumer.common.handler.RpcConsumerHandler;
 import com.doublew2w.rpc.consumer.common.init.RpcConsumerInitializer;
@@ -62,9 +63,10 @@ public class RpcConsumer {
 
   public void close() {
     eventLoopGroup.shutdownGracefully();
+    ClientThreadPool.shutdown();
   }
 
-  //修改返回数据的类型
+  // 修改返回数据的类型
   public RpcFuture sendRequest(RpcProtocol<RpcRequest> protocol) throws Exception {
     // TODO 暂时写死，后续在引入注册中心时，从注册中心获取
     String serviceAddress = "127.0.0.1";

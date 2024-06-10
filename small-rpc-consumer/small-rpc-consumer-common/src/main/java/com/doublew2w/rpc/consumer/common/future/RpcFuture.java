@@ -1,13 +1,18 @@
 package com.doublew2w.rpc.consumer.common.future;
 
+import com.doublew2w.rpc.common.threadpool.ClientThreadPool;
+import com.doublew2w.rpc.consumer.common.callback.AsyncRpcCallback;
 import com.doublew2w.rpc.protocol.RpcProtocol;
 import com.doublew2w.rpc.protocol.request.RpcRequest;
 import com.doublew2w.rpc.protocol.response.RpcResponse;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
+import java.util.concurrent.locks.ReentrantLock;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -33,6 +38,12 @@ public class RpcFuture extends CompletableFuture<Object> {
 
   /** 响应超时时长 */
   private long responseTimeThreshold = 5000;
+
+  /** 异步回调接口 */
+  private List<AsyncRpcCallback> pendingCallbacks = new ArrayList<>();
+
+  /** */
+  private ReentrantLock lock = new ReentrantLock();
 
   public RpcFuture(RpcProtocol<RpcRequest> requestRpcProtocol) {
     this.sync = new Sync();
@@ -96,6 +107,7 @@ public class RpcFuture extends CompletableFuture<Object> {
   public void done(RpcProtocol<RpcResponse> responseRpcProtocol) {
     this.responseRpcProtocol = responseRpcProtocol;
     sync.release(1);
+    invokeCallbacks();
     // Threshold
     long responseTime = System.currentTimeMillis() - startTime;
     if (responseTime > this.responseTimeThreshold) {
@@ -106,6 +118,51 @@ public class RpcFuture extends CompletableFuture<Object> {
               + responseTime
               + "ms");
     }
+  }
+
+  /**
+   * 添加回调接口
+   *
+   * @param callback 回调接口
+   * @return 结果
+   */
+  public RpcFuture addCallback(AsyncRpcCallback callback) {
+    lock.lock();
+    try {
+      if (isDone()) {
+        runCallback(callback);
+      } else {
+        this.pendingCallbacks.add(callback);
+      }
+    } finally {
+      lock.unlock();
+    }
+    return this;
+  }
+
+  /** 触发回调接口 */
+  private void invokeCallbacks() {
+    lock.lock();
+    try {
+      for (final AsyncRpcCallback callback : pendingCallbacks) {
+        runCallback(callback);
+      }
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  private void runCallback(final AsyncRpcCallback callback) {
+    final RpcResponse res = this.responseRpcProtocol.getBody();
+    ClientThreadPool.submit(
+        () -> {
+          if (!res.isError()) {
+            callback.onSuccess(res.getResult());
+          } else {
+            callback.onException(
+                new RuntimeException("Response error", new Throwable(res.getError())));
+          }
+        });
   }
 
   static class Sync extends AbstractQueuedSynchronizer {
