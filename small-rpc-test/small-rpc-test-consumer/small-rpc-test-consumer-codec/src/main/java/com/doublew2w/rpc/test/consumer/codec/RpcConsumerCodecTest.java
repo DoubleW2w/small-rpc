@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
  * @project: small-rpc
  */
 @Slf4j
-public class RpcConsumerTest {
+public class RpcConsumerCodecTest {
 
   @Test
   public void testConsumerConnectProvider() throws InterruptedException {

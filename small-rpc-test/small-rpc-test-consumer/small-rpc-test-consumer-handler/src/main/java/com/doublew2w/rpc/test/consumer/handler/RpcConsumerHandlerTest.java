@@ -19,15 +19,48 @@ import org.junit.jupiter.api.Test;
 public class RpcConsumerHandlerTest {
 
   @Test
-  public void testRpcConsumerHandler() throws Exception {
+  public void testConsumerAsync() throws Exception {
     RpcConsumer consumer = RpcConsumer.getInstance();
-    RpcFuture rpcFuture = consumer.sendRequest(getRpcRequestProtocol());
-    Object result = rpcFuture.get();
-    log.info("从服务消费者获取到的数据===>>>:{}", result.toString());
+    RpcFuture rpcFuture = consumer.sendRequest(getRpcRequestProtocolAsync());
+    Object o = rpcFuture.get();
+    log.info("从服务消费者获取到的数据===>>>:{}", o.toString());
     consumer.close();
   }
 
-  private RpcProtocol<RpcRequest> getRpcRequestProtocol() {
+  @Test
+  public void testConsumerSync() throws Exception {
+    RpcConsumer consumer = RpcConsumer.getInstance();
+    RpcFuture rpcFuture = consumer.sendRequest(getRpcRequestProtocolSync());
+    log.info("从服务消费者获取到的数据===>>>:{}", rpcFuture.get());
+    consumer.close();
+  }
+
+  @Test
+  public void testConsumerOneway() throws Exception {
+    RpcConsumer consumer = RpcConsumer.getInstance();
+    consumer.sendRequest(getRpcRequestProtocolOneway());
+    log.info("无需返回的数据");
+    consumer.close();
+  }
+
+  private RpcProtocol<RpcRequest> getRpcRequestProtocolAsync() {
+    // 模拟发送数据
+    RpcProtocol<RpcRequest> protocol = new RpcProtocol<RpcRequest>();
+    protocol.setHeader(RpcHeaderFactory.getRequestHeader("jdk"));
+    RpcRequest request = new RpcRequest();
+    request.setClassName("com.doublew2w.rpc.test.api.DemoService");
+    request.setGroup("double");
+    request.setMethodName("hello");
+    request.setParameters(new Object[] {"mynadasdasweeqqwwe"});
+    request.setParameterTypes(new Class[] {String.class});
+    request.setVersion("1.0.0");
+    request.setAsync(true);
+    request.setOneway(false);
+    protocol.setBody(request);
+    return protocol;
+  }
+
+  private RpcProtocol<RpcRequest> getRpcRequestProtocolSync() {
     // 模拟发送数据
     RpcProtocol<RpcRequest> protocol = new RpcProtocol<RpcRequest>();
     protocol.setHeader(RpcHeaderFactory.getRequestHeader("jdk"));
@@ -42,5 +75,61 @@ public class RpcConsumerHandlerTest {
     request.setOneway(false);
     protocol.setBody(request);
     return protocol;
+  }
+
+  private RpcProtocol<RpcRequest> getRpcRequestProtocolOneway() {
+    // 模拟发送数据
+    RpcProtocol<RpcRequest> protocol = new RpcProtocol<RpcRequest>();
+    protocol.setHeader(RpcHeaderFactory.getRequestHeader("jdk"));
+    RpcRequest request = new RpcRequest();
+    request.setClassName("com.doublew2w.rpc.test.api.DemoService");
+    request.setGroup("double");
+    request.setMethodName("hello");
+    request.setParameters(new Object[] {"mynadasdasweeqqwwe"});
+    request.setParameterTypes(new Class[] {String.class});
+    request.setVersion("1.0.0");
+    request.setAsync(false);
+    request.setOneway(true);
+    protocol.setBody(request);
+    return protocol;
+  }
+
+  public static class ThreadLocalExample {
+    private static ThreadLocal<Integer> threadLocal = ThreadLocal.withInitial(() -> 1);
+
+    public static void main(String[] args) {
+      Runnable task = () -> {
+        System.out.println(Thread.currentThread().getName() + " initial value: " + threadLocal.get());
+        threadLocal.set(threadLocal.get() + 1);
+        System.out.println(Thread.currentThread().getName() + " updated value: " + threadLocal.get());
+      };
+
+      Thread thread1 = new Thread(task);
+      Thread thread2 = new Thread(task);
+
+      thread1.start();
+      thread2.start();
+    }
+  }
+
+
+  public static class InheritableThreadLocalExample {
+    private static InheritableThreadLocal<Integer> inheritableThreadLocal = new InheritableThreadLocal<>();
+
+    public static void main(String[] args) {
+      inheritableThreadLocal.set(1);
+
+      Runnable task = () -> {
+        System.out.println(Thread.currentThread().getName() + " initial value: " + inheritableThreadLocal.get());
+        inheritableThreadLocal.set(inheritableThreadLocal.get() + 1);
+        System.out.println(Thread.currentThread().getName() + " updated value: " + inheritableThreadLocal.get());
+      };
+
+      Thread thread1 = new Thread(task);
+      Thread thread2 = new Thread(task);
+
+      thread1.start();
+      thread2.start();
+    }
   }
 }
