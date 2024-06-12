@@ -1,6 +1,7 @@
 package com.doublew2w.rpc.consumer.common.context;
 
-import com.doublew2w.rpc.consumer.common.future.RpcFuture;
+
+import com.doublew2w.rpc.proxy.api.future.RpcFuture;
 
 /**
  * 保存RPC上下文

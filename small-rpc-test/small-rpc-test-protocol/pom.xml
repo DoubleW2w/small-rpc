@@ -21,6 +21,7 @@
         <dependency>
             <groupId>com.doublew2w</groupId>
             <artifactId>small-rpc-protocol</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>

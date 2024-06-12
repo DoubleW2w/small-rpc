@@ -18,6 +18,7 @@
         <module>small-rpc-codec</module>
         <module>small-rpc-serialization</module>
         <module>small-rpc-consumer</module>
+        <module>small-rpc-proxy</module>
     </modules>
 
     <properties>

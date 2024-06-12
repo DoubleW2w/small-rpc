@@ -19,7 +19,8 @@
     <dependencies>
         <dependency>
             <groupId>com.doublew2w</groupId>
-            <artifactId>small-rpc-provider-naive</artifactId>
+            <artifactId>small-rpc-provider-native</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.doublew2w</groupId>

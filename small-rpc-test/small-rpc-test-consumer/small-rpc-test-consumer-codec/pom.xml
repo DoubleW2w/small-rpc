@@ -20,10 +20,12 @@
         <dependency>
             <groupId>com.doublew2w</groupId>
             <artifactId>small-rpc-codec</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.doublew2w</groupId>
             <artifactId>small-rpc-common</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.doublew2w</groupId>

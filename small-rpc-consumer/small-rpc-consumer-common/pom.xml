@@ -21,5 +21,9 @@
             <groupId>com.doublew2w</groupId>
             <artifactId>small-rpc-codec</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.doublew2w</groupId>
+            <artifactId>small-rpc-proxy-jdk</artifactId>
+        </dependency>
     </dependencies>
 </project>

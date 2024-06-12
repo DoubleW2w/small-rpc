@@ -1,11 +1,11 @@
 package com.doublew2w.rpc.test.consumer.handler;
 
 import com.doublew2w.rpc.consumer.common.RpcConsumer;
-import com.doublew2w.rpc.consumer.common.callback.AsyncRpcCallback;
-import com.doublew2w.rpc.consumer.common.future.RpcFuture;
 import com.doublew2w.rpc.protocol.RpcProtocol;
 import com.doublew2w.rpc.protocol.header.RpcHeaderFactory;
 import com.doublew2w.rpc.protocol.request.RpcRequest;
+import com.doublew2w.rpc.proxy.api.callbak.AsyncRpcCallback;
+import com.doublew2w.rpc.proxy.api.future.RpcFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 

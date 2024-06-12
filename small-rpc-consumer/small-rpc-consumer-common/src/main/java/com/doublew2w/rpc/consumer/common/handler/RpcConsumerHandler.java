@@ -2,11 +2,11 @@ package com.doublew2w.rpc.consumer.common.handler;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.doublew2w.rpc.consumer.common.context.RpcContext;
-import com.doublew2w.rpc.consumer.common.future.RpcFuture;
 import com.doublew2w.rpc.protocol.RpcProtocol;
 import com.doublew2w.rpc.protocol.header.RpcHeader;
 import com.doublew2w.rpc.protocol.request.RpcRequest;
 import com.doublew2w.rpc.protocol.response.RpcResponse;
+import com.doublew2w.rpc.proxy.api.future.RpcFuture;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;

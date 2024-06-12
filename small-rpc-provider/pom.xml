@@ -12,7 +12,7 @@
     <description>rpc 服务提供者父工程</description>
     <modules>
         <module>small-rpc-provider-common</module>
-        <module>small-rpc-provider-naive</module>
+        <module>small-rpc-provider-native</module>
     </modules>
     <artifactId>small-rpc-provider</artifactId>
 
