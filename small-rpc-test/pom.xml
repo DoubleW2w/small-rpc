@@ -16,6 +16,7 @@
         <module>small-rpc-test-protocol</module>
         <module>small-rpc-test-consumer</module>
         <module>small-rpc-test-api</module>
+        <module>small-rpc-test-registry</module>
     </modules>
 
     <properties>
