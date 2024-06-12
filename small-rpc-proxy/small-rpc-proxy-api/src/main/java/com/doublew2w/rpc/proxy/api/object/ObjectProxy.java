@@ -3,8 +3,10 @@ package com.doublew2w.rpc.proxy.api.object;
 import com.doublew2w.rpc.protocol.RpcProtocol;
 import com.doublew2w.rpc.protocol.header.RpcHeaderFactory;
 import com.doublew2w.rpc.protocol.request.RpcRequest;
+import com.doublew2w.rpc.proxy.api.async.IAsyncObjectProxy;
 import com.doublew2w.rpc.proxy.api.consumer.Consumer;
 import com.doublew2w.rpc.proxy.api.future.RpcFuture;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
@@ -16,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
  * @project: small-rpc
  */
 @Slf4j
-public class ObjectProxy<T> implements InvocationHandler {
+public class ObjectProxy<T> implements InvocationHandler, IAsyncObjectProxy {
   /** 接口的Class对象 */
   private Class<T> clazz;
 
@@ -105,6 +107,61 @@ public class ObjectProxy<T> implements InvocationHandler {
     return rpcFuture == null
         ? null
         : timeout > 0 ? rpcFuture.get(timeout, TimeUnit.MILLISECONDS) : rpcFuture.get();
+  }
+
+  @Override
+  public RpcFuture call(String funcName, Object... args) {
+    RpcProtocol<RpcRequest> requestRpcProtocol = new RpcProtocol<>();
+
+    requestRpcProtocol.setHeader(RpcHeaderFactory.getRequestHeader(serializationType));
+
+    RpcRequest request = new RpcRequest();
+    request.setClassName(this.clazz.getName());
+    request.setMethodName(funcName);
+    request.setParameters(args);
+    request.setVersion(this.serviceVersion);
+    request.setGroup(this.serviceGroup);
+    request.setVersion(this.serviceVersion);
+    request.setAsync(async);
+    request.setOneway(oneway);
+
+    Class[] parameterTypes = new Class[args.length];
+    // Get the right class type
+    for (int i = 0; i < args.length; i++) {
+      parameterTypes[i] = getClassType(args[i]);
+    }
+    request.setParameterTypes(parameterTypes);
+    requestRpcProtocol.setBody(request);
+
+    // 打印被代理的信息
+    log.debug(this.clazz.getName());
+    log.debug(funcName);
+    for (int i = 0; i < parameterTypes.length; ++i) {
+      log.debug(parameterTypes[i].getName());
+    }
+    for (int i = 0; i < args.length; ++i) {
+      log.debug(args[i].toString());
+    }
+
+    RpcFuture rpcFuture = null;
+    try {
+      rpcFuture = this.consumer.sendRequest(requestRpcProtocol);
+    } catch (Exception e) {
+      log.error("async all throws exception:{}", e);
+    }
+    return rpcFuture;
+  }
+
+
+  private Class<?> getClassType(Object obj) {
+    try {
+      Class<?> classType = obj.getClass();
+      Field typeField = classType.getDeclaredField("TYPE");
+      return (Class<?>) typeField.get(null);
+    } catch (NoSuchFieldException | IllegalAccessException e) {
+      // 不是包装类时，直接返回对象的类类型
+      return obj.getClass();
+    }
   }
 
   private Object handleObjectMethods(Object proxy, Method method, Object[] args) {

@@ -125,6 +125,6 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
     // 如果是异步调用，则将RpcFuture放入RpcContext
     RpcContext.getContext().setRPCFuture(rpcFuture);
     channel.writeAndFlush(protocol);
-    return rpcFuture;
+    return null;
   }
 }

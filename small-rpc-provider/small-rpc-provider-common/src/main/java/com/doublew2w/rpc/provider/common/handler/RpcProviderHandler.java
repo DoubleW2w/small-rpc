@@ -178,7 +178,7 @@ public class RpcProviderHandler extends SimpleChannelInboundHandler<RpcProtocol<
       Class<?>[] parameterTypes,
       Object[] parameters)
       throws Throwable {
-    log.info("Start invoking method...:");
+    log.info("use jdk reflect invoking method...:");
     Method method = serviceClass.getMethod(methodName, parameterTypes);
     method.setAccessible(true);
     return method.invoke(serviceBean, parameters);
