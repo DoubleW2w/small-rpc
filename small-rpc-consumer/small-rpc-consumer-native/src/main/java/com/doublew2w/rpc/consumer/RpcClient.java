@@ -1,7 +1,9 @@
 package com.doublew2w.rpc.consumer;
 
 import com.doublew2w.rpc.consumer.common.RpcConsumer;
+import com.doublew2w.rpc.proxy.api.ProxyFactory;
 import com.doublew2w.rpc.proxy.api.async.IAsyncObjectProxy;
+import com.doublew2w.rpc.proxy.api.config.ProxyConfig;
 import com.doublew2w.rpc.proxy.api.object.ObjectProxy;
 import com.doublew2w.rpc.proxy.jdk.JdkProxyFactory;
 import lombok.NoArgsConstructor;
@@ -51,16 +53,18 @@ public class RpcClient {
   }
 
   public <T> T create(Class<T> interfaceClass) {
-    JdkProxyFactory<T> jdkProxyFactory =
-        new JdkProxyFactory<>(
+    ProxyFactory proxyFactory = new JdkProxyFactory<T>();
+    proxyFactory.init(
+        new ProxyConfig<>(
+            interfaceClass,
             serviceVersion,
             serviceGroup,
-            serializationType,
             timeout,
             RpcConsumer.getInstance(),
+            serializationType,
             async,
-            oneway);
-    return jdkProxyFactory.getProxy(interfaceClass);
+            oneway));
+    return proxyFactory.getProxy(interfaceClass);
   }
 
   public <T> IAsyncObjectProxy createAsync(Class<T> interfaceClass) {

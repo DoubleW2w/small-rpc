@@ -13,6 +13,8 @@ import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ * 对象代理类
+ *
  * @author: DoubleW2w
  * @date: 2024/6/12 17:02
  * @project: small-rpc
@@ -151,7 +153,6 @@ public class ObjectProxy<T> implements InvocationHandler, IAsyncObjectProxy {
     }
     return rpcFuture;
   }
-
 
   private Class<?> getClassType(Object obj) {
     try {
